@@ -71,16 +71,14 @@ pipeline {
             }
       agent any
       environment {
-          HEROKU_API_KEY = credentials('heroku_api_key')
+          RENDER_STAGING_DEPLOY_HOOK = credentials('render_api_key')
       }  
       steps {
           script {
             sh '''
-              npm i -g heroku@7.68.0
-              heroku container:login
-              heroku create $STAGING || echo "project already exist"
-              heroku container:push -a $STAGING web
-              heroku container:release -a $STAGING web
+               echo "Staging"
+               echo $RENDER_STAGING_DEPLOY_HOOK
+               curl $RENDER_STAGING_DEPLOY_HOOK
             '''
           }
         }
@@ -94,16 +92,12 @@ pipeline {
             }
       agent any
       environment {
-          HEROKU_API_KEY = credentials('heroku_api_key')
+          RENDER_PRODUCTION_DEPLOY_HOOK = credentials('render_production_deploy_hook')
       }  
       steps {
           script {
             sh '''
-              npm i -g heroku@7.68.0
-              heroku container:login
-              heroku create $PRODUCTION || echo "project already exist"
-              heroku container:push -a $PRODUCTION web
-              heroku container:release -a $PRODUCTION web
+              curl $RENDER_PRODUCTION_DEPLOY_HOOK
             '''
           }
         }
