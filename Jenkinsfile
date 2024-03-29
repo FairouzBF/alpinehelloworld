@@ -1,4 +1,6 @@
+/* import shared library */
 @Library('shared-library')_
+
 pipeline {
      environment {
        ID_DOCKER = "${ID_DOCKER_PARAMS}"
@@ -83,8 +85,6 @@ pipeline {
         }
      }
 
-
-
      stage('Push image in production and deploy it') {
        when {
               expression { GIT_BRANCH == 'origin/production' }
@@ -102,11 +102,11 @@ pipeline {
         }
      }
   }
-       post {
+     post {
        always {
-      script {
-        slackNotifier currentBuild.result
-      }
-    }  
-    }  
+            script {
+                 slackNotifier currentBuild.result
+            }
+       }  
+    }
 }
