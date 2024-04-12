@@ -35,7 +35,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    curl jenkins-docker | grep -q "Hello world!"
+                    curl http://localhost:${PORT_EXPOSED} | grep -q "Hello world!"
                     '''
                 }
             }
@@ -80,29 +80,6 @@ pipeline {
                     curl $RENDER_STAGING_DEPLOY_HOOK
                     '''
                 }
-            }
-        }
-        stage('Push image in production and deploy it') {
-            when {
-                expression { GIT_BRANCH == 'origin/production' }
-            }
-            agent any
-            environment {
-                RENDER_PRODUCTION_DEPLOY_HOOK = credentials('render_production_deploy_hook')
-            }
-            steps {
-                script {
-                    sh '''
-                    curl $RENDER_PRODUCTION_DEPLOY_HOOK
-                    '''
-                }
-            }
-        }
-    }
-    post {
-        always {
-            script {
-                slackNotifier currentBuild.result
             }
         }
     }
